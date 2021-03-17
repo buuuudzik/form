@@ -1,0 +1,54 @@
+const express = require('express');
+const app = express();
+const cors = require('cors');
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cors());
+const { saveForm, getForms } = require('./db');
+const validateForm = require('./validateForm');
+
+const PORT = 5035;
+
+app.get('/forms', async (req, res) => {
+  try {
+    const forms = await getForms();
+    res.send({
+      status: true,
+      forms,
+    });
+  } catch (err) {
+    console.log(err);
+    res.send({
+      success: false,
+    });
+  }
+});
+
+app.post('/form', async (req, res) => {
+  const [errorMessage, validatedForm] = validateForm(req.body);
+
+  if (errorMessage) {
+    return res.send({
+      success: false,
+      errorMessage,
+    });
+  }
+
+  try {
+    await saveForm(validatedForm);
+    res.send({
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    if (err.errno === 19) {
+      res.send({
+        success: false,
+        errorMessage: err.errno === 19 ? "Email exists" : "Internal error",
+      });
+    }
+  }
+});
+
+app.listen(PORT, () => console.log(`App listen on port ${PORT}`));
