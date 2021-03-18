@@ -1,20 +1,15 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { useForm } from 'react-hook-form';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
 import GroupAddTwoToneIcon from '@material-ui/icons/GroupAddTwoTone';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { useForm, Controller } from 'react-hook-form';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
-import { connect } from 'react-redux';
 import { fetchingErrorSelector, submittedSelector } from '../../../store/selectors';
-import { fetchWithErrorHandling } from '../../../helpers';
+import { emailRegExp, dateRegExp, fetchWithErrorHandling } from '../../../helpers';
+import TextField from './fields/TextField/TextField';
+import DateField from './fields/DateField/DateField';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -22,9 +17,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  },
-  margin: {
-    margin: 10,
   },
   avatar: {
     margin: theme.spacing(1),
@@ -50,6 +42,7 @@ function EventForm({ submitted, fetchError, setFetching, setFetched }) {
     errors: fieldsErrors,
     control,
   } = useForm();
+  
   const onSubmit = async (data) => {
     // Send to server in as a timestamp
     data.eventDate = data.eventDate.getTime();
@@ -76,8 +69,6 @@ function EventForm({ submitted, fetchError, setFetching, setFetched }) {
 
   const canSubmit = !hasErrors && !submitted;
 
-  const defaultDate = new Date();
-
   return (
     <div className={classes.paper}>
       <Avatar className={classes.avatar}>
@@ -91,106 +82,50 @@ function EventForm({ submitted, fetchError, setFetching, setFetched }) {
         noValidate
         onSubmit={handleSubmit(onSubmit)}
       >
-        <FormControl fullWidth className={classes.margin} variant="outlined">
-          <Controller
-            name="firstName"
-            as={
-              <TextField
-                id="firstName"
-                helperText={getErrorMessage('firstName')}
-                variant="outlined"
-                label="First Name"
-                error={!!getErrorMessage('firstName')}
-              />
-            }
-            control={control}
-            defaultValue=""
-            rules={{
-              required: 'Required',
-            }}
-          />
-        </FormControl>
-        <FormControl fullWidth className={classes.margin} variant="outlined">
-          <Controller
-            name="lastName"
-            as={
-              <TextField
-                id="lastName"
-                helperText={getErrorMessage('lastName')}
-                variant="outlined"
-                label="Last Name"
-                error={!!getErrorMessage('lastName')}
-              />
-            }
-            control={control}
-            defaultValue=""
-            rules={{
-              required: 'Required',
-            }}
-          />
-        </FormControl>
-        <FormControl fullWidth className={classes.margin} variant="outlined">
-          <Controller
-            name="email"
-            as={
-              <TextField
-                id="email"
-                helperText={getErrorMessage('email')}
-                variant="outlined"
-                label="Email"
-                error={!!getErrorMessage('email')}
-              />
-            }
-            control={control}
-            defaultValue=""
-            rules={{
-              required: 'Required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: 'Invalid email address',
-              },
-            }}
-          />
-        </FormControl>
-        <FormControl fullWidth className={classes.margin} variant="outlined">
-          <Controller
-            name="eventDate"
-            defaultValue={defaultDate}
-            render={(props) => {
-              return (
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <Controller
-                    name="eventDate"
-                    control={control}
-                    defaultValue={defaultDate}
-                    render={({ ref, ...rest }) => {
-                      return (
-                        <KeyboardDatePicker
-                          margin="normal"
-                          id="date-picker-dialog"
-                          label="Event Date"
-                          format="MM/dd/yyyy"
-                          KeyboardButtonProps={{
-                            'aria-label': 'Change date',
-                          }}
-                          {...rest}
-                        />
-                      );
-                    }}
-                  />
-                </MuiPickersUtilsProvider>
-              );
-            }}
-            control={control}
-            rules={{
-              required: 'Required',
-              pattern: {
-                value: /^[0-1][0-9]\/[0-3][0-9]\/[2][0-9]{3}$/,
-                message: 'Invalid date',
-              },
-            }}
-          />
-        </FormControl>
+        <TextField
+          name="firstName"
+          label="First Name"
+          helperText={getErrorMessage('firstName')}
+          rules={{
+            required: 'Required',
+          }}
+          control={control}
+        />
+        <TextField
+          name="lastName"
+          label="Last Name"
+          helperText={getErrorMessage('lastName')}
+          rules={{
+            required: 'Required',
+          }}
+          control={control}
+        />
+        <TextField
+          name="email"
+          label="Email Address"
+          helperText={getErrorMessage('email')}
+          rules={{
+            required: 'Required',
+            pattern: {
+              value: emailRegExp,
+              message: 'Invalid email address',
+            },
+          }}
+          control={control}
+        />
+        <DateField
+          name="eventDate"
+          label="Event Date"
+          helperText={getErrorMessage('eventDate')}
+          rules={{
+            required: 'Required',
+            pattern: {
+              value: dateRegExp,
+              message: 'Invalid date',
+            },
+          }}
+          control={control}
+        />
         <Button
           type="submit"
           fullWidth

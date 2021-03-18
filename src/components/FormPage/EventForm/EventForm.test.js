@@ -11,6 +11,12 @@ describe("<EventForm />", () => {
         fetching: false,
     });
 
+    // Wypełnij pola i naciśnij przycisk submit
+    // gdy wypełniono poprawnymi danymi powinien się zmienić stan fetching
+    // gdy wypełniono błędnymi danymi nie powinien się zmienić stan fetching
+    // czy pokazują się błędy
+    // czy nie pokazują się błędy
+
     describe("Form", () => {
         it("Should have all inputs", () => {
             store = mockStore({
@@ -54,7 +60,7 @@ describe("<EventForm />", () => {
 
         // Testy poszczególnych pól, które mają zwracać błąd
 
-        it("Empty form should be failed", () => {
+        it("Empty form should be failed", (done) => {
             store = mockStore({
                 submitted: false,
                 fetchError: "",
@@ -68,9 +74,19 @@ describe("<EventForm />", () => {
             expect(sendBtn).toBeInTheDocument();
 
             act(() => {
+                store.subscribe(() => {
+                    const { fetching } = store.getState();
+                    expect(fetching).toBeFalsy();
+
+                    console.log("Hello");
+
+                    const requiredMessages = screen.getAllByText(/required/i);
+                    expect(requiredMessages[0]).toBeInTheDocument();
+
+                    done();
+                });
+
                 fireEvent.click(sendBtn);
-                const requiredMessages = screen.getAllByText(/required/i);
-                expect(requiredMessages[0]).toBeInTheDocument();
             });
         });
     });
