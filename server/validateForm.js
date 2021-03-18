@@ -1,3 +1,8 @@
+const isString = v => typeof v === "string";
+const isNumber = v => typeof v === "number";
+const isObject = v => typeof v === "object" && v !== null;
+const isObjectEmpty = v => Object.keys(v).length === 0;
+
 const isEmailValid = (email) => {
     if (typeof email !== "string") return false;
     return !!`${email}`.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i);
@@ -8,7 +13,14 @@ const isDateValid = (date) => {
 };
 
 const isExisting = (name, data) => {
-    return (name in data);
+    const isSet = name in data;
+    if (!isSet) return false;
+
+    const value = data[name];
+    if (isString(value) && value === "") return false;
+    if (isNumber(value) && isNaN(value)) return false;
+    
+    return true;
 };
 
 const fields = [
@@ -17,9 +29,6 @@ const fields = [
     { name: "email", isRequired: true, isEmailValid: true },
     { name: "eventDate", isRequired: true, isDateValid: true },
 ];
-
-const isObject = v => typeof v === "object" && v !== null;
-const isObjectEmpty = v => Object.keys(v).length === 0;
 
 const validateForm = (form = {}) => {
     if (!form || !isObject(form) || isObjectEmpty(form)) {
