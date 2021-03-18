@@ -8,7 +8,7 @@ yarn
 
 ## Running development
 
-yarn start-server
+yarn server-start
 
 yarn start
 
@@ -24,4 +24,5 @@ yarn start-server
 
 ## Running testing
 
+yarn server-test
 yarn test

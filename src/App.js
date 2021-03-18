@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import FormPage from './components/FormPage/FormPage';
 import AfterPage from './components/AfterPage/AfterPage';
 import Spinner from './components/Spinner/Spinner';
