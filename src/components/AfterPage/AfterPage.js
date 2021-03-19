@@ -21,7 +21,7 @@ export default function AfterPage() {
   const classes = useStyles();
 
   return (
-    <Grid container component="main" className={classes.root}>
+    <Grid container component="main" className={classes.root} data-testid="after-page">
       <CssBaseline />
       <Grid item xs={12} sm={12} md={12} component={Paper} elevation={6} square>
           <div className={classes.message}>

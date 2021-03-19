@@ -28,7 +28,7 @@ function Spinner(props) {
   if (!props.fetching) return null;
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} data-testid="spinner">
       <CircularProgress size={70} />
     </div>
   );

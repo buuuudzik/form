@@ -1,4 +1,4 @@
-import { emailRegExp } from './helpers';
+import { emailRegExp } from '../helpers';
 
 describe('test helpers', () => {
     describe('test email regexp', () => {

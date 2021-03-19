@@ -4,7 +4,7 @@ const initialState = {
   submitted: false,
 };
 
-const actions = {
+export const actions = {
   FETCHING: 'FETCHING',
   FETCHED: 'FETCHED',
 };

@@ -2,10 +2,10 @@ import * as React from 'react';
 import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
-import Spinner from './Spinner';
+import Spinner from '../components/Spinner/Spinner';
 
-describe('<Spinner /> render properly', () => {
-  it('should render <CircularProgress /> while fetching', () => {
+describe('<Spinner />', () => {
+  it('should render while fetching', () => {
     let store;
   
     const mockStore = configureStore({
@@ -16,14 +16,14 @@ describe('<Spinner /> render properly', () => {
       fetching: true,
     });
   
-    const { container } = render(<Provider store={store}>
+    const { getByTestId } = render(<Provider store={store}>
       <Spinner />
     </Provider>);
   
-    expect(container.childNodes).toHaveLength(1);
+    expect(getByTestId('spinner')).toBeInTheDocument();
   });
   
-  it('should not render <CircularProgress /> while not fetching', () => {
+  it('should not render while not fetching', () => {
     let store;
   
     const mockStore = configureStore({
@@ -34,10 +34,10 @@ describe('<Spinner /> render properly', () => {
       fetching: false,
     });
   
-    const { container } = render(<Provider store={store}>
+    const { queryByTestId } = render(<Provider store={store}>
       <Spinner />
     </Provider>);
   
-    expect(container.childNodes).toHaveLength(0);
+    expect(queryByTestId('spinner')).toBeNull();
   });  
 });

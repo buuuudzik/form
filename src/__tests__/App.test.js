@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import App from '../App';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 
@@ -15,15 +15,15 @@ describe('<App /> render proper page', () => {
       submitted: false,
     });
   
-    render(<Provider store={store}>
+    const { getByTestId } = render(<Provider store={store}>
       <App />
   </Provider>);
   
-    const formTitle = screen.getByText(/new event/i);
+    const formTitle = getByTestId('event-form');
     expect(formTitle).toBeInTheDocument();
   });
   
-  it('should render <AfterPage /> when submitted', () => {
+  it('should render <AfterPage /> with thanks when submitted', () => {
     let store;
   
     const mockStore = configureStore({
@@ -34,11 +34,12 @@ describe('<App /> render proper page', () => {
       submitted: true,
     });
   
-    render(<Provider store={store}>
+    const { queryByTestId } = render(<Provider store={store}>
       <App />
   </Provider>);
   
-    const thankYouMessage = screen.getByText(/thank you for submitting/i);
-    expect(thankYouMessage).toBeInTheDocument();
+  const afterPage = queryByTestId('after-page');
+  expect(afterPage).toBeInTheDocument();
+  expect(afterPage).toHaveTextContent("Thank you for submitting");
   });  
 });

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import EventForm from "./EventForm";
+import EventForm from "../components/FormPage/EventForm/EventForm";
 import { Provider } from 'react-redux';
 
 describe("<EventForm />", () => {

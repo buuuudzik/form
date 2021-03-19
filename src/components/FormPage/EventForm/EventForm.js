@@ -81,6 +81,7 @@ function EventForm({ submitted, fetchError, setFetching, setFetched }) {
         className={classes.form}
         noValidate
         onSubmit={handleSubmit(onSubmit)}
+        data-testid="event-form"
       >
         <TextField
           name="firstName"
